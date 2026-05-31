@@ -1,0 +1,12 @@
+# Python cache and environments
+__pycache__/
+*.pyc
+venv/
+
+# Ignored commercial stems and outputs
+sampleA/
+output_sampleA/
+
+# OS generated files
+.DS_Store
+Thumbs.db
