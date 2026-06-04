@@ -44,6 +44,8 @@ def process_stems(
     bass_y_hist = None 
     
     smoothed_gain = 0.0
+    # Initialize log-domain energy state to prevent cold-start false trigger
+    prev_energy_db = None
     
     attack_coeff = np.exp(-1.0 / (config.CONTROL_RATE * config.PRESET_DRUM_BASS["attack_ms"] / 1000.0))
     release_coeff = np.exp(-1.0 / (config.CONTROL_RATE * config.PRESET_DRUM_BASS["release_ms"] / 1000.0))
@@ -60,11 +62,15 @@ def process_stems(
             drum_block, bp_b, bp_a, drum_x_hist, drum_y_hist
         )
         
-        trigger_db = dynamics.rms_dbfs(filtered_drum)
+        current_db = dynamics.rms_dbfs(filtered_drum)
+        
+        if prev_energy_db is None:
+            prev_energy_db = current_db
         
         target_gain = dynamics.gain_reduction(
-            trigger_db, 
-            config.PRESET_DRUM_BASS["threshold_db"], 
+            current_db, 
+            prev_energy_db,
+            config.PRESET_DRUM_BASS["threshold"], 
             config.PRESET_DRUM_BASS["ratio"]
         )
           
@@ -92,8 +98,10 @@ def process_stems(
         
         output_bass[i:i+block_size] = processed_bass_block
         
+        prev_energy_db = current_db
+        
         if smoothed_gain < -1.0:
             timestamp = i / config.SAMPLE_RATE
-            print(f"[Time: {timestamp:.2f}s] Trigger: {trigger_db:.1f} dBFS | Attenuation: {smoothed_gain:.2f} dB")
+            print(f"[Time: {timestamp:.2f}s] Trigger: {current_db:.1f} dBFS | Attenuation: {smoothed_gain:.2f} dB")
             
     return drum, bass, output_bass

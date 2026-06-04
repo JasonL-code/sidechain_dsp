@@ -3,8 +3,9 @@ __pycache__/
 *.pyc
 venv/
 
-# Ignored commercial stems and outputs
+# Ignored commercial stems and audio binaries
 sampleA/
+output/*.wav
 output_sampleA/
 
 # OS generated files

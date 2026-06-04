@@ -18,7 +18,7 @@ PRESET_DRUM_BASS = {
     "target_fc": 90.0, # Hz
     "target_q": 1.4, # Q-factor (dimensionless)
     
-    "threshold_db": -25.0, # dBFS
+    "threshold": 6.0, # dBFS
     "ratio": 3.0, # :1 ratio
     "attack_ms": 5.0, # ms
     "release_ms": 40.0, # ms

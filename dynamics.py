@@ -13,13 +13,14 @@ def rms_dbfs(audio_block: np.ndarray) -> float:
     
     return 20 * np.log10(rms_val)
 
-def gain_reduction(trigger_db: float, threshold_db: float, ratio: float) -> float:
+def gain_reduction(current_db: float, previous_db: float, threshold_db: float, ratio: float) -> float:
     """
     Calculate target attenuation (<= 0.0 dB) using log-domain downward compression
-    when signal exceeds threshold.
+    when the rate of change exceeds threshold.
     """
-    if trigger_db > threshold_db:
-        overshoot = trigger_db - threshold_db
+    delta_db = current_db - previous_db
+    if delta_db > threshold_db:
+        overshoot = delta_db - threshold_db
         return (overshoot / ratio) - overshoot
     return 0.0
 
