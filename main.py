@@ -66,6 +66,13 @@ def process_stems(
         
         if prev_energy_db is None:
             prev_energy_db = current_db
+            
+        fc = dynamics.frequency_center(filtered_drum, config.SAMPLE_RATE)
+        dynamic_fc = np.clip(
+            fc, 
+            config.PRESET_DRUM_BASS["fc_min"], 
+            config.PRESET_DRUM_BASS["fc_max"]
+        )
         
         target_gain = dynamics.gain_reduction(
             current_db, 
@@ -81,7 +88,7 @@ def process_stems(
         
         # --- Processor Path  ---
         eq_b, eq_a = filter.target_eq_coeffs(
-            config.PRESET_DRUM_BASS["target_fc"],
+            dynamic_fc,
             config.PRESET_DRUM_BASS["target_q"],
             smoothed_gain,
             config.SAMPLE_RATE
@@ -102,6 +109,6 @@ def process_stems(
         
         if smoothed_gain < -1.0:
             timestamp = i / config.SAMPLE_RATE
-            print(f"[Time: {timestamp:.2f}s] Trigger: {current_db:.1f} dBFS | Attenuation: {smoothed_gain:.2f} dB")
+            print(f"[Time: {timestamp:.2f}s] Gain: {smoothed_gain:.1f} dB | FC: {dynamic_fc:.1f} Hz")
             
     return drum, bass, output_bass

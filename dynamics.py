@@ -32,3 +32,10 @@ def smooth(target_gain: float, prev_gain: float, attack_coeff: float, release_co
         return attack_coeff * prev_gain + (1.0 - attack_coeff) * target_gain
 
     return release_coeff * prev_gain + (1.0 - release_coeff) * target_gain
+
+def frequency_center(audio_block: np.ndarray, sr: int) -> float:
+    """
+    Estimate fundamental frequency via Zero-Crossing Rate (ZCR).
+    """
+    crossings = np.count_nonzero(np.diff(np.signbit(audio_block)))
+    return (crossings / (2.0 * len(audio_block))) * sr
