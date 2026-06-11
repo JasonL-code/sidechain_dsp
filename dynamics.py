@@ -33,9 +33,22 @@ def smooth(target_gain: float, prev_gain: float, attack_coeff: float, release_co
 
     return release_coeff * prev_gain + (1.0 - release_coeff) * target_gain
 
-def frequency_center(audio_block: np.ndarray, sr: int) -> float:
+def frequency_center(audio_block: np.ndarray, sr: int, schmitt_thresh: float = 0.05) -> float:
     """
-    Estimate fundamental frequency via Zero-Crossing Rate (ZCR).
+    Estimate fundamental frequency via Zero-Crossing Rate (ZCR) using a Schmitt Trigger.
     """
-    crossings = np.count_nonzero(np.diff(np.signbit(audio_block)))
+    crossings = 0
+    if len(audio_block) == 0:
+        return 0.0
+        
+    state = audio_block[0] > 0
+    
+    for sample in audio_block:
+        if sample > schmitt_thresh and not state:
+            state = True
+            crossings += 1
+        elif sample < -schmitt_thresh and state:
+            state = False
+            crossings += 1
+            
     return (crossings / (2.0 * len(audio_block))) * sr

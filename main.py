@@ -67,7 +67,11 @@ def process_stems(
         if prev_energy_db is None:
             prev_energy_db = current_db
             
-        fc = dynamics.frequency_center(filtered_drum, config.SAMPLE_RATE)
+        fc = dynamics.frequency_center(
+            filtered_drum, 
+            config.SAMPLE_RATE,
+            config.PRESET_DRUM_BASS["schmitt_thresh"]
+        )
         dynamic_fc = np.clip(
             fc, 
             config.PRESET_DRUM_BASS["fc_min"], 

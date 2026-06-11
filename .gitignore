@@ -8,6 +8,12 @@ sampleA/
 output/*.wav
 output_sampleA/
 
+# Ignored commercial stems testing script
+reproduce_resultsA.py
+
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Assets for v2
+assets/

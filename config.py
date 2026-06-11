@@ -18,9 +18,11 @@ PRESET_DRUM_BASS = {
     
     "fc_min": 40.0, # Hz
     "fc_max": 200.0, # Hz
-    "target_q": 20, # Q-factor (dimensionless)
+    "target_q": 1.0, # Q-factor (dimensionless)
     
     "ratio": 3.0, # :1 ratio
     "attack_ms": 5.0, # ms
     "release_ms": 40.0, # ms
+    
+    "schmitt_thresh": 0.05,
 }
